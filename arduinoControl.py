@@ -2,17 +2,23 @@ import pyfirmata
 import time
 import math
 
+class arduinoControl(object):
+	def establishConnection(portName):
+		print("Trying to connect to Arduino at "+portName)
+		try:
+			arduino=pyfirmata.Arduino(portName)
+			iter8=pyfirmata.util.Iterator(arduino)
+			iter8.start()
+			print("Connected to Arduino at "+portName)
+			return True
+		except:
+			print("Failed to connect to Arduino at "+portName)
+			print("Try selecting a new port")
+			return False
 
-def establishConnection(portName):
-	try:
-		arduino=pyfirmata.Arduino(portName)
-		print("Connected to Arduino at "+portName)
-	except:
-		print("Failed to connect to Arduino at "+portName)
-	iter8=pyfirmata.util.Iterator(arduino)
-	iter8.start()
-	return arduino
-
+		
+		#return arduino
+'''
 def initializeServos(arduino,pins):
 	servoLookup={}
 	for pinNumber in pins:
@@ -142,5 +148,5 @@ def runSweepDemo():
 
 
 runSweepDemo()
-
+'''
 
