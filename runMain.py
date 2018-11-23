@@ -1,7 +1,12 @@
 from tkinter import *
+from PIL import Image,ImageTk
 from Button import Button
 from arduinoControl import arduinoControl
 import glob
+from pykinect2 import PyKinectV2
+from pykinect2.PyKinectV2 import *
+from pykinect2 import PyKinectRuntime
+import numpy as np
 #from pykinect2 import PyKinectRuntime
 def drawFinishedScreen(canvas):
     canvas.create_rectangle(0,0,data.height,data.width,fill='white')
@@ -26,11 +31,21 @@ def get2DImage(frame):
         i+=1
     return image
 
-def drawDepthFrame():
+def drawDepthFrame(canvas):
     kinect=data.kinect
     if kinect.has_new_depth_frame():
         frame=kinect.get_last_depth_frame
         image=get2DImage(frame)
+        myarray=np.array(image)
+        img = Image.fromarray(np.uint8(cm.gist_earth(myarray)*255))
+        newImg = ImageTk.PhotoImage(img)  
+        canvas.create_image(20,20, anchor=NW, image=newImg)   
+        
+
+
+
+
+
 
 
 
@@ -39,6 +54,7 @@ def drawDepthFrame():
 def runScanScreen(canvas,data):
     canvas.create_rectangle(0,0,data.width,data.height,fill='white')
     data.scanButton.drawButton(canvas)
+    drawDepthFrame(canvas)
 
 def runUsbScreen(canvas,data):
     canvas.create_text(data.width//2,0,text="What port is the Arduino connected to?",font='Arial 40',anchor='n')
@@ -55,11 +71,19 @@ def drawStartScreen(canvas,data):
 
 def init(data):
     data.arduinoPort=""
+    '''
     data.startScreenOn=True
     data.usbScreenOn=False
     data.scanScreenOn=False
     data.humanControlOn=False
     data.redoScreenOn=False
+    '''
+    data.startScreenOn=False
+    data.usbScreenOn=False
+    data.scanScreenOn=True
+    data.humanControlOn=False
+    data.redoScreenOn=False
+
     data.startButton=Button(data.width//2,data.height//2,150,100,'Start',fontSize=35)
     data.usbButton=Button(data.width//2,data.height*(3/4),300,100,'Done?',fontSize=35,)
     data.scanButton=Button(data.width//2,data.height*(3/4),300,100,'Run Scan',fontSize=40)
@@ -73,9 +97,10 @@ def init(data):
         w,h=widthPortButtons,50
         newButton=Button(data.width//4,150+(i*h),w,h,str(portsList[i]),fontSize=30)
         data.portButtons.append(newButton)
+    data.depthImage=Image
+    data.kinect=PyKinectRuntime.PyKinectRuntime(PyKinectV2.FrameSourceTypes_Depth)
 
-    
-    #data.kinect=PyKinectVctRuntime.PyKinectRuntime(PyKinectV2.FrameSourceTypes_Depth)
+
 def mousePressed(event,data):
     if data.startScreenOn and data.startButton.isPressed(event):
         data.startScreenOn=False
