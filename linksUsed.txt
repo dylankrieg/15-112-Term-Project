@@ -1,1 +1,0 @@
-https://stackoverflow.com/questions/873327/pythons-most-efficient-way-to-choose-longest-string-in-list
