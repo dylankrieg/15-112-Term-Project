@@ -8,6 +8,7 @@ from pykinect2.PyKinectV2 import *
 from pykinect2 import PyKinectRuntime
 import numpy as np
 #from pykinect2 import PyKinectRuntime
+
 def drawFinishedScreen(canvas):
     canvas.create_rectangle(0,0,data.height,data.width,fill='white')
 
@@ -40,16 +41,6 @@ def drawDepthFrame(canvas):
         img = Image.fromarray(np.uint8(cm.gist_earth(myarray)*255))
         newImg = ImageTk.PhotoImage(img)  
         canvas.create_image(20,20, anchor=NW, image=newImg)   
-        
-
-
-
-
-
-
-
-
-
 
 def runScanScreen(canvas,data):
     canvas.create_rectangle(0,0,data.width,data.height,fill='white')
@@ -71,13 +62,7 @@ def drawStartScreen(canvas,data):
 
 def init(data):
     data.arduinoPort=""
-    '''
-    data.startScreenOn=True
-    data.usbScreenOn=False
-    data.scanScreenOn=False
-    data.humanControlOn=False
-    data.redoScreenOn=False
-    '''
+
     data.startScreenOn=False
     data.usbScreenOn=False
     data.scanScreenOn=True
@@ -123,8 +108,6 @@ def mousePressed(event,data):
                 data.scanScreenOn=True
             else:
                 data.errorMessage="Failed to connect to Arduino at "+data.arduinoPort
-
-
             
     elif data.scanScreenOn and data.scanButton.isPressed(event):
         pass
@@ -133,10 +116,8 @@ def mousePressed(event,data):
 
 
 
-
 def keyPressed(event,data):
     pass
-
 
 def redrawAll(canvas,data):
     if data.startScreenOn:
@@ -148,8 +129,6 @@ def redrawAll(canvas,data):
     elif data.humanControlOn:
         pass
     
-
-
 
 def run(width,height):
     def redrawAllWrapper(canvas, data):
@@ -176,13 +155,12 @@ def run(width,height):
     root.resizable(width=False, height=False) # prevents resizing window
     init(data)
     # create the root and the canvas
-    canvas = Canvas(root, width=data.width, height=data.height)
+    canvas = Canvas(root, width=data.width,
+                    height=data.height)
     canvas.configure(bd=0, highlightthickness=0)
     canvas.pack()
 
-    ###EDITS START HERE###
     root.attributes("-fullscreen",True)
-    ###EDITS END HERE###
     mainFrame=Frame(root)
     ports=glob.glob('/dev/tty.*')
     variable=StringVar(root)
@@ -192,11 +170,8 @@ def run(width,height):
     popupMenu=OptionMenu(mainFrame,variable,*ports)
     Label(mainFrame, text="Choose a dish").grid(row = 1, column = 1)
     popupMenu.grid(row = 2, column =1)
-    '''w=OptionMenu(root,variable,"one","two","three")
-    w.pack()'''
 
 
-    ###EDITS END HERE###
     # set up events
     root.bind("<Button-1>", lambda event:
                             mousePressedWrapper(event, canvas, data))
