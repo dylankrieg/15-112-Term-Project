@@ -18,7 +18,7 @@ class arduinoControl(object):
 
 		
 		#return arduino
-'''
+		
 def initializeServos(arduino,pins):
 	servoLookup={}
 	for pinNumber in pins:
@@ -148,5 +148,4 @@ def runSweepDemo():
 
 
 runSweepDemo()
-'''
 
